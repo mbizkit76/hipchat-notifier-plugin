@@ -53,7 +53,7 @@ Job Page -> Configure -> Post-build Action (section) -> Add post-build action
   - Room Notification (created by room owner),
 1. Message Format (SUCCESS)
 1. Message Format (FAILED)
-1. Massage from file
+1. Message from file
   - Load notify message from file
   - ignore message format setting
 
