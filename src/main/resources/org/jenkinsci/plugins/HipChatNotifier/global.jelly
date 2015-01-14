@@ -20,5 +20,8 @@
       description="HipChat API Token">
       <f:textbox />
     </f:entry>
+    <f:entry title="Default RoomName or RoomID" field="room">
+      <f:textbox />
+    </f:entry>
   </f:section>
 </j:jelly>

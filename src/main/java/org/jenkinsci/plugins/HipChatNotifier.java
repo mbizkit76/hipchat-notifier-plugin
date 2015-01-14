@@ -57,7 +57,7 @@ public class HipChatNotifier extends Notifier {
         }
     }
 
-    public final String room;
+    public final String jobRoom;
     public final String jobToken;
     public final String successMessageFormat;
     public final String failedMessageFormat;
@@ -69,7 +69,7 @@ public class HipChatNotifier extends Notifier {
 
     @DataBoundConstructor
     public HipChatNotifier(
-            String room,
+            String jobRoom,
             String jobToken,
             String successMessageFormat,
             String failedMessageFormat,
@@ -79,7 +79,7 @@ public class HipChatNotifier extends Notifier {
             boolean notifyFailed,
             MessageFromFile messageFromFile
     ) {
-        this.room = room;
+        this.jobRoom = jobRoom;
         this.jobToken = jobToken;
         this.postSuccess = postSuccess;
         this.notifySuccess = notifySuccess;
@@ -91,7 +91,7 @@ public class HipChatNotifier extends Notifier {
     }
 
     public String getRoom() {
-        return room;
+        return jobRoom;
     }
 
     private boolean shouldPost(AbstractBuild build) {
@@ -133,18 +133,23 @@ public class HipChatNotifier extends Notifier {
         PrintStream logger = listener.getLogger();
         String server = getDescriptor().getServer();
         String token = getDescriptor().getToken();
+        String room = getDescriptor().getRoom();
 
         if (this.jobToken.length() > 0) {
             token = this.jobToken;
+        }
+        
+        if (this.jobRoom != null && this.jobRoom.length() > 0) {
+            room = this.jobRoom;
         }
 
         logger.println("HipChat Post   : " + shouldPost(build));
         logger.println("HipChat Post   : " + shouldPost(build));
         logger.println("HipChat Notify : " + shouldNotify(build));
 
-        if (token.length() > 0 && getRoom().length() > 0 && shouldPost(build)) {
+        if (token.length() > 0 && room.length() > 0 && shouldPost(build)) {
             boolean notifyResult = new HipChat(token, server).notify(
-                    getRoom(),
+                    room,
                     new NotifyMessage(
                             NotifyMessage.BackgroundColor.get(build.getResult().color),
                             buildMessage(build, listener),
@@ -176,6 +181,7 @@ public class HipChatNotifier extends Notifier {
         private static final String NOTIFY_TEMPLATE = "${JOB_NAME} #${BUILD_NUMBER} (${BUILD_RESULT}) ${BUILD_URL}";
         private String server;
         private String token;
+        private String room;
 
         /**
          * In order to load the persisted global configuration, you have to
@@ -191,6 +197,10 @@ public class HipChatNotifier extends Notifier {
         
         public String getServer() {
             return server;
+        }
+        
+        public String getRoom() {
+            return room;
         }
 
         public String getDefaultMessageFormat() {
@@ -219,16 +229,11 @@ public class HipChatNotifier extends Notifier {
             return "HipChat Notifier";
         }
 
-        public FormValidation doCheckRoom(@QueryParameter String room) throws IOException, ServletException {
-            if (room.length() == 0)
-                return FormValidation.error("Please input RoomName or RoomID");
-            return FormValidation.ok();
-        }
-
         @Override
         public boolean configure(StaplerRequest req, JSONObject json) throws FormException {
             this.server = json.getString("server");
             this.token = json.getString("token");
+            this.room = json.getString("room");
             save();
             return super.configure(req, json);
         }
