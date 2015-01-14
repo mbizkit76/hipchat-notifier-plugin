@@ -33,6 +33,12 @@ To upload it to Jenkins:
 * pick path to plugin and submit,
 * restart Jenkins.
 
+## Authentication
+
+Token types are described in [the API v2 docs](https://www.hipchat.com/docs/apiv2/auth).
+
+This plugin works with API v2 tokens only! When switching from v1, get new one for v2.
+
 ## Configure
 
 ### Global Settings
