@@ -144,7 +144,6 @@ public class HipChatNotifier extends Notifier {
         }
 
         logger.println("HipChat Post   : " + shouldPost(build));
-        logger.println("HipChat Post   : " + shouldPost(build));
         logger.println("HipChat Notify : " + shouldNotify(build));
 
         if (token.length() > 0 && room.length() > 0 && shouldPost(build)) {
