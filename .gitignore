@@ -2,3 +2,6 @@
 *.iml
 work
 target
+.classpath
+.project
+.settings/*

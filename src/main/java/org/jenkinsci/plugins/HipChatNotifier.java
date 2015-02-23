@@ -134,7 +134,9 @@ public class HipChatNotifier extends Notifier {
         String server = getDescriptor().getServer();
         String token = getDescriptor().getToken();
         String room = getDescriptor().getRoom();
-
+        String proxy_host = getDescriptor().getProxyHost();
+        String proxy_port = getDescriptor().getProxyPort();
+                
         if (this.jobToken.length() > 0) {
             token = this.jobToken;
         }
@@ -142,24 +144,33 @@ public class HipChatNotifier extends Notifier {
         if (this.jobRoom != null && this.jobRoom.length() > 0) {
             room = this.jobRoom;
         }
-
+              
         logger.println("HipChat Post   : " + shouldPost(build));
         logger.println("HipChat Notify : " + shouldNotify(build));
 
         if (token.length() > 0 && room.length() > 0 && shouldPost(build)) {
-            boolean notifyResult = new HipChat(token, server).notify(
-                    room,
-                    new NotifyMessage(
-                            NotifyMessage.BackgroundColor.get(build.getResult().color),
-                            buildMessage(build, listener),
-                            shouldNotify(build)
+        	
+        	if (proxy_host == null) {
+        		proxy_host = "" ; 
+        	}
+        	
+        	if (proxy_port == null) {
+        		proxy_port = "" ; 
+        	}        	
+            
+        	boolean notifyResult = new HipChat(token, server, proxy_host, proxy_port).notify(
+        		room,
+                new NotifyMessage(
+                		NotifyMessage.BackgroundColor.get(build.getResult().color),
+                        buildMessage(build, listener),
+                        shouldNotify(build)
                     )
             );
             if (notifyResult) {
                 logger.println("HipChat Notification OK");
             } else {
                 logger.println("HipChat Notification Failed");
-            }
+            }        
         } else {
             logger.println("HipChatNotifier InvalidSettings.");
         }
@@ -181,6 +192,9 @@ public class HipChatNotifier extends Notifier {
         private String server;
         private String token;
         private String room;
+        private String proxy_host;
+        private String proxy_port;
+        
 
         /**
          * In order to load the persisted global configuration, you have to
@@ -200,6 +214,14 @@ public class HipChatNotifier extends Notifier {
         
         public String getRoom() {
             return room;
+        }
+        
+        public String getProxyHost() {
+            return proxy_host;
+        }
+        
+        public String getProxyPort() {
+            return proxy_port;
         }
 
         public String getDefaultMessageFormat() {
@@ -233,8 +255,11 @@ public class HipChatNotifier extends Notifier {
             this.server = json.getString("server");
             this.token = json.getString("token");
             this.room = json.getString("room");
+            this.proxy_host = json.getString("proxy_host");
+            this.proxy_port = json.getString("proxy_port");
             save();
             return super.configure(req, json);
         }
+
     }
 }
