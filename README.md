@@ -20,7 +20,7 @@ If you want to compile plugin yourself, follow these steps:
 sudo apt-get install openjdk-7-jdk maven2
 git clone git@github.com:havramar/hipchat-notifier-plugin.git
 cd hipchat-notifier-plugin
-mvn package
+mvn clean package
 ```
 
 As a result `target/hipchat-notifier.hpi` should be created. 
@@ -45,6 +45,8 @@ This plugin works with API v2 tokens only! When switching from v1, get new one f
 
 Manage Jenkins -> System Settings -> Hip Chat Notifier (section)
   - your api token - https://{xxxx}.hipchat.com/account/api
+
+Since v1.4.0 Proxy host and Proxy port can be set in order to reach api.hipchat.com from Jenkins servers installed behind the company firewall.
 
 ### Job Settings
 
